@@ -1,0 +1,30 @@
+CREATE TABLE AuthorizationToken (
+id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,
+accessToken TEXT NOT NULL,
+refreshToken TEXT NOT NULL
+);
+
+CREATE TABLE PostImages (
+id INTEGER NOT NULL PRIMARY KEY,
+uuid TEXT NOT NULL,
+imageUri TEXT NOT NULL
+);
+
+selectAllTokenPair:
+SELECT * FROM AuthorizationToken ORDER BY id DESC;
+
+selectAllImagesByBlog:
+SELECT * FROM PostImages WHERE uuid = ?;
+
+insertAuthorizationToken:
+INSERT INTO AuthorizationToken(accessToken,refreshToken)
+VALUES (?,?);
+
+insertImagesBlog:
+INSERT INTO PostImages(uuid,imageUri) VALUES (?,?);
+
+removeAllAuthorizationToken:
+DELETE FROM AuthorizationToken;
+
+removeAllImages:
+DELETE FROM PostImages;
