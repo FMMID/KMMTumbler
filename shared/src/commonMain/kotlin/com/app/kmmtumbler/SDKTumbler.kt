@@ -1,7 +1,5 @@
 package com.app.kmmtumbler
 
-import android.util.Log
-import android.webkit.WebResourceRequest
 import com.app.kmmtumbler.cahe.Database
 import com.app.kmmtumbler.cahe.TumblerAuthorizationDAO
 import com.app.kmmtumbler.cahe.entities.ImagesEntity
@@ -14,8 +12,8 @@ import com.app.kmmtumbler.network.api.user.ITumblerUserAPI
 import com.app.kmmtumbler.network.api.user.TumblerUserAPI
 import com.app.kmmtumbler.network.response.ResponseToken
 import com.app.kmmtumbler.utils.AuthorizationStatus
-import com.app.kmmtumbler.utils.CommonConst
 import com.app.kmmtumbler.utils.parseImage
+import io.github.aakira.napier.Napier
 
 class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
 
@@ -33,33 +31,24 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
         }
     }
 
-    override suspend fun getTokenUser(request: WebResourceRequest): Boolean {
-        if (request.url.toString().startsWith(CommonConst.REDIRECT_URI) &&
-            request.url.getQueryParameter("state") == TumblerAuthorizationAPI.SESSION_STATE
-        ) {
-            request.url.getQueryParameter("code")?.let { code ->
-                Log.d("OAuth", "Here is the authorization code! $code")
-                kotlin.runCatching {
-                    getToken(code)
-                }.onSuccess {
-                    database.insertNewToken(
-                        TokensEntity(
-                            id = 0L,
-                            accessToken = it.accessToken,
-                            refreshToken = it.refreshToken
-                        )
-                    )
-                    return true
-                }.onFailure {
-                    Log.e("Token", "token response: ${it.message}")
-                    return false
-                }
-            } ?: run {
-                Log.d("OAuth", "Authorization code not received :(")
-                return false
-            }
+    override suspend fun getTokenUser(code: String): Boolean {
+        Napier.v(tag = "OAuth", message = "Here is the authorization code! $code")
+        kotlin.runCatching {
+            getToken(code)
+        }.onSuccess {
+            database.insertNewToken(
+                TokensEntity(
+                    id = 0L,
+                    accessToken = it.accessToken,
+                    refreshToken = it.refreshToken
+                )
+            )
+            return true
+        }.onFailure {
+            Napier.v(tag = "Token", message = "token response: ${it.message}")
+            return false
         }
-        return false
+        return true
     }
 
     override suspend fun getUserImages(): List<UserBlog> {

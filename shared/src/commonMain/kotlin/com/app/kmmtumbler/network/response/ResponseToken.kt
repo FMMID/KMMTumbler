@@ -20,7 +20,4 @@ data class ResponseToken(
 
     @SerialName("scope")
     val scope: String,
-
-    @SerialName("id_token")
-    val idToken: Boolean,
 )

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -13,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.app.kmmtumbler.DatabaseDriveFactory
 import com.app.kmmtumbler.ISDKTumbler
 import com.app.kmmtumbler.SDKTumbler
+import com.app.kmmtumbler.network.api.authorization.TumblerAuthorizationAPI
 import com.app.kmmtumbler.utils.AuthorizationStatus
+import com.app.kmmtumbler.utils.CommonConst
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -61,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                 request?.let {
                     scope.launch {
                         kotlin.runCatching {
-                            tumblerSDK.getTokenUser(it)
+                            checkUrl(it)
                         }.onSuccess {
                             if (it) {
                                 view?.visibility = View.INVISIBLE
@@ -103,5 +106,20 @@ class MainActivity : AppCompatActivity() {
                 tv.text = it.localizedMessage
             }
         }
+    }
+
+    private suspend fun checkUrl(request: WebResourceRequest): Boolean {
+        if (request.url.toString().startsWith(CommonConst.REDIRECT_URI) &&
+            request.url.getQueryParameter("state") == TumblerAuthorizationAPI.SESSION_STATE
+        ) {
+            request.url.getQueryParameter("code")?.let { code ->
+                Log.d("OAuth", "Here is the authorization code! $code")
+                return tumblerSDK.getTokenUser(code)
+            } ?: run {
+                Log.d("OAuth", "Authorization code not received :(")
+                return false
+            }
+        }
+        return false
     }
 }
