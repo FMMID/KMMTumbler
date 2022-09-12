@@ -14,7 +14,7 @@ import com.app.kmmtumbler.network.api.user.ITumblerUserAPI
 import com.app.kmmtumbler.network.api.user.TumblerUserAPI
 import com.app.kmmtumbler.network.response.ResponseToken
 import com.app.kmmtumbler.utils.AuthorizationStatus
-import com.app.kmmtumbler.utils.CommonCosts
+import com.app.kmmtumbler.utils.CommonConst
 import com.app.kmmtumbler.utils.parseImage
 
 class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
@@ -34,7 +34,7 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
     }
 
     override suspend fun getTokenUser(request: WebResourceRequest): Boolean {
-        if (request.url.toString().startsWith(CommonCosts.REDIRECT_URI) &&
+        if (request.url.toString().startsWith(CommonConst.REDIRECT_URI) &&
             request.url.getQueryParameter("state") == TumblerAuthorizationAPI.SESSION_STATE
         ) {
             request.url.getQueryParameter("code")?.let { code ->

@@ -3,9 +3,9 @@ package com.app.kmmtumbler.network.api.authorization
 import com.app.kmmtumbler.getUniqueState
 import com.app.kmmtumbler.network.request.RequestToken
 import com.app.kmmtumbler.network.response.ResponseToken
-import com.app.kmmtumbler.utils.CommonCosts.CLIENT_CONSUMER_KEY
-import com.app.kmmtumbler.utils.CommonCosts.CLIENT_SECRET_KEY
-import com.app.kmmtumbler.utils.CommonCosts.REDIRECT_URI
+import com.app.kmmtumbler.utils.CommonConst.CLIENT_CONSUMER_KEY
+import com.app.kmmtumbler.utils.CommonConst.CLIENT_SECRET_KEY
+import com.app.kmmtumbler.utils.CommonConst.REDIRECT_URI
 import com.app.kmmtumbler.utils.getDefaultHttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post

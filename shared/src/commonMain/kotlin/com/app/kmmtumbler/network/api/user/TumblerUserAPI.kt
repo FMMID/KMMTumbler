@@ -5,7 +5,7 @@ import com.app.kmmtumbler.network.request.RequestRefreshToken
 import com.app.kmmtumbler.network.response.ResponseToken
 import com.app.kmmtumbler.network.response.ResponseUserInfo
 import com.app.kmmtumbler.network.response.ResponseUserPosts
-import com.app.kmmtumbler.utils.CommonCosts
+import com.app.kmmtumbler.utils.CommonConst
 import com.app.kmmtumbler.utils.getDefaultHttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth
@@ -62,8 +62,8 @@ class TumblerUserAPI(private val authorizationDAO: ITumblerAuthorizationDAO) : I
             setBody(
                 RequestRefreshToken(
                     grantType = "refresh_token",
-                    clientId = CommonCosts.CLIENT_CONSUMER_KEY,
-                    clientSecret = CommonCosts.CLIENT_SECRET_KEY,
+                    clientId = CommonConst.CLIENT_CONSUMER_KEY,
+                    clientSecret = CommonConst.CLIENT_SECRET_KEY,
                     refreshToken = refreshToken
                 )
             )
