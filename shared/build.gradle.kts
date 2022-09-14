@@ -1,8 +1,7 @@
-import org.jetbrains.kotlin.fir.declarations.builder.buildTypeAlias
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("plugin.serialization")
     id("com.android.library")
     id("com.squareup.sqldelight")
 }
@@ -20,18 +19,23 @@ kotlin {
         }
     }
 
-    val ktorVersion = "2.0.2"
-    val sqlDelightVersion = "1.5.3"
-
     sourceSets {
+        val ktorVersion = "2.0.3"
+        val serializationVersion = "1.3.3"
+        val coroutinesVersion = "1.6.3"
+        val sqlDelightVersion = "1.5.3"
+
         val commonMain by getting {
 
             dependencies {
                 //Coroutines
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+
+                //Serialization
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
 
                 //Loger
-                implementation("io.github.aakira:napier:1.4.1")
+                implementation("io.github.aakira:napier:2.6.1")
 
                 //Ktor
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
@@ -51,6 +55,9 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                //Coroutines
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+
                 //Ktor
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
 
@@ -63,18 +70,17 @@ kotlin {
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-
             dependencies {
                 //Ktor
-                implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+                implementation("io.ktor:ktor-client-ios:$ktorVersion")
 
                 //SQLDelight
                 implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
             }
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
         }
         val iosX64Test by getting
         val iosArm64Test by getting
@@ -94,12 +100,6 @@ android {
     defaultConfig {
         minSdk = 21
         targetSdk = 32
-    }
-}
-
-kotlin.targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget::class.java) {
-    binaries.all {
-        binaryOptions["memoryModel"] = "experimental"
     }
 }
 

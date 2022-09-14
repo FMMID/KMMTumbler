@@ -24,7 +24,7 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
     private val tumblerUserAPI: ITumblerUserAPI = TumblerUserAPI(TumblerAuthorizationDAO(::getActualTokensPair))
 
     override suspend fun authorization(): AuthorizationStatus {
-        return if (database.getAllTokens().isNullOrEmpty()) {
+        return if (database.getAllTokens().isEmpty()) {
             AuthorizationStatus.Failure(tumblerAuthorizationAPI.authorization())
         } else {
             AuthorizationStatus.Success("Success")
@@ -53,7 +53,7 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
 
     override suspend fun getUserImages(): List<UserBlog> {
         return tumblerUserAPI.getUserInfo().responseUserBlogsData.userBlogsData.blogsData.map { blog ->
-            if (!database.getImagesByBlog(blog.uuid).isNullOrEmpty()) {
+            if (database.getImagesByBlog(blog.uuid).isNotEmpty()) {
                 UserBlog(
                     uuidBlog = blog.uuid,
                     images = database.getImagesByBlog(blog.uuid).map {

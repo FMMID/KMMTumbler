@@ -5,6 +5,7 @@ import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import platform.Foundation.NSUUID
 import platform.UIKit.UIDevice
 
 actual class Platform actual constructor() {
@@ -15,7 +16,7 @@ actual fun initLogger() {
     Napier.base(DebugAntilog())
 }
 
-actual fun getUniqueState(): String = ""
+actual fun getUniqueState(): String = NSUUID().UUIDString()
 
 actual class DatabaseDriveFactory {
 
