@@ -2,16 +2,14 @@ import SwiftUI
 import shared
 
 struct ContentView: View {
-    let tumblerSDK = SDKTumbler(databaseDriveFactory: DatabaseDriveFactory())
-    
     @State var authorization = "Loading..."
-    @ObservedObject var viewModel = ViewModel()
+    @ObservedObject private(set) var viewModel: ViewModel
     @State var isLoaderVisible = false
     @State var responseBody = "Empty"
     @State var isShowWebView = true
     
     func laodAuthorizationUrl(){
-        tumblerSDK.authorization() { result, error in
+        self.viewModel.sdk.authorization() { result, error in
             if let result = result {
                 switch result {
                 case is AuthorizationStatus.Success :
@@ -26,9 +24,9 @@ struct ContentView: View {
             }
         }
     }
-    
+
     func getUserImages() {
-        tumblerSDK.getUserImages(){ result, error in
+        self.viewModel.sdk.getUserImages(){ result, error in
             if let result = result {
                 responseBody = result.description
                 isShowWebView = false
@@ -38,15 +36,15 @@ struct ContentView: View {
             }
         }
     }
-    
+
     func loadUserTokens(code:String){
-        tumblerSDK.getTokenUser(code: code) { result, error in
+        self.viewModel.sdk.getTokenUser(code: code) { result, error in
             if let result = result {
                 self.viewModel.successAuth.send(result.boolValue)
             } else if let error = error {
                 responseBody = "Error: \(error)"
             }
-            
+
         }
     }
     
@@ -85,8 +83,8 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView()
+//    }
+//}

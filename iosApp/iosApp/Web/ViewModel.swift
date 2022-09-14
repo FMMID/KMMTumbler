@@ -8,8 +8,16 @@
 
 import Foundation
 import Combine
+import shared
 
 class ViewModel: ObservableObject {
+    
+    let sdk:SDKTumbler
+    
+    init(sdk:SDKTumbler){
+        self.sdk = sdk
+    }
+    
     var isLoaderVisible = PassthroughSubject<Bool, Never>()
     var webTitle = PassthroughSubject<String, Never>()
     var webViewNavigationPublisher = PassthroughSubject<WebViewNavigationAction, Never>()

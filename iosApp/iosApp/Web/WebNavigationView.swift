@@ -52,8 +52,8 @@ struct WebNavigationView: View {
     }
 }
 
-struct WebNavigationView_Previews: PreviewProvider {
-    static var previews: some View {
-        WebNavigationView(viewModel: ViewModel())
-    }
-}
+//struct WebNavigationView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        WebNavigationView(viewModel: ViewModel())
+//    }
+//}
