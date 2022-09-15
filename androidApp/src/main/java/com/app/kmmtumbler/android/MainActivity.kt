@@ -70,8 +70,6 @@ class MainActivity : AppCompatActivity() {
                                 view?.visibility = View.INVISIBLE
                                 tv.text = tumblerSDK.getUserImages().toString()
                             }
-                        }.onFailure {
-
                         }
                     }
                 }

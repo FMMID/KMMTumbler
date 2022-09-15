@@ -30,63 +30,77 @@ class TumblerUserAPI(private val authorizationDAO: ITumblerAuthorizationDAO) : I
     private val httpClient = getDefaultHttpClient(LOGGING_TAG).config {
         install(Auth) {
             bearer {
+                val defaultBearToken = BearerTokens("", "")
                 loadTokens {
-                    val lastActualToken = authorizationDAO.getActualTokensPair()
-                    if (lastActualToken != null) {
-                        BearerTokens(lastActualToken.accessToken, lastActualToken.refreshToken)
-                    } else {
-                        BearerTokens("", "")
-                    }
+                    val lastActualToken = authorizationDAO.getActualTokensPair() ?: return@loadTokens defaultBearToken
+                    BearerTokens(lastActualToken.accessToken, lastActualToken.refreshToken)
                 }
                 refreshTokens {
-                    val lastActualToken = authorizationDAO.getActualTokensPair()
-                    if (lastActualToken != null) {
-                        val result = refreshToken(lastActualToken.refreshToken)
-                        BearerTokens(result.accessToken, result.refreshToken)
-                    } else {
-                        BearerTokens("", "")
+                    val lastActualToken =
+                        authorizationDAO.getActualTokensPair() ?: return@refreshTokens defaultBearToken
+                    refreshToken(lastActualToken.refreshToken).getOrElse {
+                        return@refreshTokens defaultBearToken
+                    }.let {
+                        authorizationDAO.insertNewTokensPair(it.accessToken, it.refreshToken)
+                        BearerTokens(it.accessToken, it.refreshToken)
                     }
                 }
             }
         }
     }
 
-    private suspend fun refreshToken(refreshToken: String): ResponseToken {
-        return getDefaultHttpClient(LOGGING_TAG).post {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = HOST_NAME_TUMBLER_API
-                path("${TUMBLER_API_VERSION}/oauth2/token")
-            }
-            contentType(ContentType.Application.Json)
-            setBody(
-                RequestRefreshToken(
-                    grantType = "refresh_token",
-                    clientId = CommonConst.CLIENT_CONSUMER_KEY,
-                    clientSecret = CommonConst.CLIENT_SECRET_KEY,
-                    refreshToken = refreshToken
-                )
+    private suspend fun refreshToken(refreshToken: String): Result<ResponseToken> {
+        return try {
+            Result.success(
+                getDefaultHttpClient(LOGGING_TAG).post {
+                    url {
+                        protocol = URLProtocol.HTTPS
+                        host = HOST_NAME_TUMBLER_API
+                        path("${TUMBLER_API_VERSION}/oauth2/token")
+                    }
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        RequestRefreshToken(
+                            grantType = "refresh_token",
+                            clientId = CommonConst.CLIENT_CONSUMER_KEY,
+                            clientSecret = CommonConst.CLIENT_SECRET_KEY,
+                            refreshToken = refreshToken
+                        )
+                    )
+                }.body()
             )
-        }.body()
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun getUserInfo(): ResponseUserInfo {
-        return httpClient.get {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = HOST_NAME_TUMBLER_API
-                path("${TUMBLER_API_VERSION}/user/info")
-            }
-        }.body()
+    override suspend fun getUserInfo(): Result<ResponseUserInfo> {
+        return try {
+            Result.success(httpClient.get {
+                url {
+                    protocol = URLProtocol.HTTPS
+                    host = HOST_NAME_TUMBLER_API
+                    path("${TUMBLER_API_VERSION}/user/info")
+                }
+            }.body())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    override suspend fun getPosts(uuidBlog: String): ResponseUserPosts {
-        return httpClient.get {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = HOST_NAME_TUMBLER_API
-                path("${TUMBLER_API_VERSION}/blog/$uuidBlog/posts")
-            }
-        }.body()
+    override suspend fun getPosts(uuidBlog: String): Result<ResponseUserPosts> {
+        return try {
+            Result.success(
+                httpClient.get {
+                    url {
+                        protocol = URLProtocol.HTTPS
+                        host = HOST_NAME_TUMBLER_API
+                        path("${TUMBLER_API_VERSION}/blog/$uuidBlog/posts")
+                    }
+                }.body()
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

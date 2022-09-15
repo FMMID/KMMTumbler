@@ -17,11 +17,16 @@ import io.github.aakira.napier.Napier
 
 class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
 
+    companion object {
+        private const val SDK_TUMBLER_LOG = "SDKTumbler"
+    }
+
     private val database = Database(databaseDriveFactory)
 
     private val tumblerAuthorizationAPI: ITumblerAuthorizationAPI = TumblerAuthorizationAPI()
 
-    private val tumblerUserAPI: ITumblerUserAPI = TumblerUserAPI(TumblerAuthorizationDAO(::getActualTokensPair))
+    private val tumblerUserAPI: ITumblerUserAPI =
+        TumblerUserAPI(TumblerAuthorizationDAO(::getActualTokensPair, ::insertNewToken))
 
     override suspend fun authorization(): AuthorizationStatus {
         return if (database.getAllTokens().isEmpty()) {
@@ -32,57 +37,83 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
     }
 
     override suspend fun getTokenUser(code: String): Boolean {
-        Napier.v(tag = "OAuth", message = "Here is the authorization code! $code")
-        kotlin.runCatching {
-            getToken(code)
-        }.onSuccess {
-            database.insertNewToken(
-                TokensEntity(
-                    id = 0L,
-                    accessToken = it.accessToken,
-                    refreshToken = it.refreshToken
-                )
-            )
-            return true
+        Napier.v(tag = SDK_TUMBLER_LOG, message = "Here is the authorization code! $code")
+        getToken(code).onSuccess {
+            insertNewToken(it)
         }.onFailure {
-            Napier.v(tag = "Token", message = "token response: ${it.message}")
+            Napier.v(tag = SDK_TUMBLER_LOG, message = "token response: ${it.message}")
             return false
         }
         return true
     }
 
     override suspend fun getUserImages(): List<UserBlog> {
-        return tumblerUserAPI.getUserInfo().responseUserBlogsData.userBlogsData.blogsData.map { blog ->
-            if (database.getImagesByBlog(blog.uuid).isNotEmpty()) {
-                UserBlog(
+        return tumblerUserAPI.getUserInfo().getOrElse {
+            Napier.v(tag = SDK_TUMBLER_LOG, message = "getUserInfo error: $it")
+            return listOf()
+        }.responseUserBlogsData.userBlogsData.blogsData.map { blog ->
+            val databaseCash = database.getImagesByBlog(blog.uuid)
+            val networkData = tumblerUserAPI.getPosts(blog.uuid).getOrElse {
+                Napier.v(tag = SDK_TUMBLER_LOG, message = "getPosts error: $it")
+                null
+            }
+            when {
+                networkData != null && networkData.response.blog.size >= databaseCash.size -> {
+                    UserBlog(
+                        uuidBlog = blog.uuid,
+                        images = networkData.response.blog.map { post ->
+                            val parsedPost = post.body.parseImage() ?: ""
+                            insertNewUserImages(blog.uuid, parsedPost)
+                            UserImage(parsedPost)
+                        }
+                    )
+                }
+                networkData == null && databaseCash.isNotEmpty() -> {
+                    UserBlog(
+                        uuidBlog = blog.uuid,
+                        images = database.getImagesByBlog(blog.uuid).map { UserImage(uri = it.uriImage) }
+                    )
+                }
+                else -> UserBlog(
                     uuidBlog = blog.uuid,
-                    images = database.getImagesByBlog(blog.uuid).map {
-                        UserImage(uri = it.uriImage)
-                    }
-                )
-            } else {
-                UserBlog(
-                    uuidBlog = blog.uuid,
-                    images = tumblerUserAPI.getPosts(blog.uuid).response.blog.map { post ->
-                        database.insertImagesBlog(
-                            ImagesEntity(
-                                id = 0L,
-                                uuidBlog = blog.uuid,
-                                uriImage = post.body.parseImage() ?: ""
-                            )
-                        )
-                        UserImage(uri = post.body.parseImage() ?: "")
-                    }
+                    images = listOf()
                 )
             }
         }
     }
 
-    private suspend fun getToken(accessCode: String): ResponseToken {
+    private suspend fun getToken(accessCode: String): Result<ResponseToken> {
         return tumblerAuthorizationAPI.getToken(accessCode)
     }
 
     private fun getActualTokensPair(): TokensEntity? {
         return database.getAllTokens().firstOrNull()
+    }
+
+    private fun insertNewToken(responseToken: ResponseToken) {
+        database.insertNewToken(
+            TokensEntity(
+                accessToken = responseToken.accessToken,
+                refreshToken = responseToken.refreshToken
+            )
+        )
+    }
+
+    private fun insertNewUserImages(uuidBlog: String, uriImage: String) {
+        database.insertImagesBlog(
+            ImagesEntity(
+                uuidBlog = uuidBlog,
+                uriImage = uriImage
+            )
+        )
+    }
+
+    private fun insertNewToken(accessToken: String, refreshToken: String) {
+        database.insertNewToken(
+            TokensEntity(
+                accessToken = accessToken,
+                refreshToken = refreshToken
+            )
+        )
     }
 }

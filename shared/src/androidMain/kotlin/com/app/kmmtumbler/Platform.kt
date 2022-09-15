@@ -8,9 +8,7 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import java.util.UUID
 
-actual fun initLogger() {
-    Napier.base(DebugAntilog())
-}
+actual fun initLogger()  = Napier.base(DebugAntilog())
 
 actual fun getUniqueState(): String = UUID.randomUUID().toString()
 

@@ -43,23 +43,27 @@ class TumblerAuthorizationAPI : ITumblerAuthorizationAPI {
         ).apply { path("oauth2/authorize") }.buildString()
     }
 
-    override suspend fun getToken(accessCode: String): ResponseToken {
-        return httpClient.post {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = HOST_NAME_TUMBLER_API
-                path("$TUMBLER_API_VERSION/oauth2/token")
-            }
-            contentType(ContentType.Application.Json)
-            setBody(
-                RequestToken(
-                    grantType = "authorization_code",
-                    code = accessCode,
-                    clientId = CLIENT_CONSUMER_KEY,
-                    clientSecret = CLIENT_SECRET_KEY,
-                    redirectUri = REDIRECT_URI
+    override suspend fun getToken(accessCode: String): Result<ResponseToken> {
+        return try {
+            Result.success(httpClient.post {
+                url {
+                    protocol = URLProtocol.HTTPS
+                    host = HOST_NAME_TUMBLER_API
+                    path("$TUMBLER_API_VERSION/oauth2/token")
+                }
+                contentType(ContentType.Application.Json)
+                setBody(
+                    RequestToken(
+                        grantType = "authorization_code",
+                        code = accessCode,
+                        clientId = CLIENT_CONSUMER_KEY,
+                        clientSecret = CLIENT_SECRET_KEY,
+                        redirectUri = REDIRECT_URI
+                    )
                 )
-            )
-        }.body()
+            }.body())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

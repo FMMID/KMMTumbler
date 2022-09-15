@@ -7,9 +7,7 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import platform.Foundation.NSUUID
 
-actual fun initLogger() {
-    Napier.base(DebugAntilog())
-}
+actual fun initLogger() = Napier.base(DebugAntilog())
 
 actual fun getUniqueState(): String = NSUUID().UUIDString()
 

@@ -6,5 +6,5 @@ interface ITumblerAuthorizationAPI {
 
     suspend fun authorization(): String
 
-    suspend fun getToken(accessCode: String): ResponseToken
+    suspend fun getToken(accessCode: String): Result<ResponseToken>
 }

@@ -1,7 +1,6 @@
 package com.app.kmmtumbler.cahe
 
 import com.app.kmmtumbler.DatabaseDriveFactory
-import com.app.kmmtumbler.cahe.entities.BlogEntity
 import com.app.kmmtumbler.cahe.entities.ImagesEntity
 import com.app.kmmtumbler.cahe.entities.TokensEntity
 import com.app.kmmtumbler.shared.cache.TumblerDatabase
