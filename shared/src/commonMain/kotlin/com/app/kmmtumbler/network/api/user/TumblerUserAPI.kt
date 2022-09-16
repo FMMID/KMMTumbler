@@ -5,6 +5,7 @@ import com.app.kmmtumbler.network.request.RequestRefreshToken
 import com.app.kmmtumbler.network.response.ResponseToken
 import com.app.kmmtumbler.network.response.ResponseUserInfo
 import com.app.kmmtumbler.network.response.ResponseUserPosts
+import com.app.kmmtumbler.network.response.ResponseUserSubscribers
 import com.app.kmmtumbler.utils.CommonConst
 import com.app.kmmtumbler.utils.getDefaultHttpClient
 import io.ktor.client.call.body
@@ -100,6 +101,22 @@ class TumblerUserAPI(private val authorizationDAO: ITumblerAuthorizationDAO) : I
                 }.body()
             )
         } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getSubscribers(uuidBlog: String): Result<ResponseUserSubscribers> {
+        return try {
+            Result.success(
+                httpClient.get {
+                    url {
+                        protocol = URLProtocol.HTTPS
+                        host = HOST_NAME_TUMBLER_API
+                        path("${TUMBLER_API_VERSION}/blog/$uuidBlog/followers")
+                    }
+                }.body()
+            )
+        } catch (e:Exception){
             Result.failure(e)
         }
     }

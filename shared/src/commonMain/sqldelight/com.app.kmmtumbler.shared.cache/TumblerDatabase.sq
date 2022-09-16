@@ -10,21 +10,41 @@ uuid TEXT NOT NULL,
 imageUri TEXT NOT NULL
 );
 
+CREATE TABLE UserSubscribers(
+id INTEGER NOT NULL PRIMARY KEY,
+uuid TEXT NOT NULL,
+name TEXT NOT NULL,
+url TEXT NOT NULL,
+updated INTEGER NOT NULL,
+following INTEGER NOT NULL
+);
+
 selectAllTokenPair:
 SELECT * FROM AuthorizationToken ORDER BY id DESC;
 
 selectAllImagesByBlog:
 SELECT * FROM PostImages WHERE uuid = ?;
 
+selectAllSubscribers:
+SELECT * FROM UserSubscribers WHERE uuid = ?;
+
 insertAuthorizationToken:
 INSERT INTO AuthorizationToken(accessToken,refreshToken)
 VALUES (?,?);
 
 insertImagesBlog:
-INSERT INTO PostImages(uuid,imageUri) VALUES (?,?);
+INSERT INTO PostImages(uuid,imageUri)
+VALUES (?,?);
+
+insertSubscribersBlog:
+INSERT INTO UserSubscribers(uuid, name, url, updated, following)
+VALUES (?,?,?,?, ?);
 
 removeAllAuthorizationToken:
 DELETE FROM AuthorizationToken;
 
 removeAllImages:
 DELETE FROM PostImages;
+
+removeAllSubscribers:
+DELETE FROM UserSubscribers;
