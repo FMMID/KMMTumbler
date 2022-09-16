@@ -43,6 +43,9 @@ kotlin {
 
                 //SQLDelight
                 implementation(libs.sqldelight)
+
+                //Multiplatform cash
+                implementation(libs.multiplatform.settings)
             }
         }
         val commonTest by getting {

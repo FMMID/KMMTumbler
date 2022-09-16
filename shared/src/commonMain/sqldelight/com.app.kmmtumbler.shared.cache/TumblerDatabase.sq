@@ -1,9 +1,3 @@
-CREATE TABLE AuthorizationToken (
-id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,
-accessToken TEXT NOT NULL,
-refreshToken TEXT NOT NULL
-);
-
 CREATE TABLE PostImages (
 id INTEGER NOT NULL PRIMARY KEY,
 uuid TEXT NOT NULL,
@@ -19,18 +13,11 @@ updated INTEGER NOT NULL,
 following INTEGER NOT NULL
 );
 
-selectAllTokenPair:
-SELECT * FROM AuthorizationToken ORDER BY id DESC;
-
 selectAllImagesByBlog:
 SELECT * FROM PostImages WHERE uuid = ?;
 
 selectAllSubscribers:
 SELECT * FROM UserSubscribers WHERE uuid = ?;
-
-insertAuthorizationToken:
-INSERT INTO AuthorizationToken(accessToken,refreshToken)
-VALUES (?,?);
 
 insertImagesBlog:
 INSERT INTO PostImages(uuid,imageUri)
@@ -39,9 +26,6 @@ VALUES (?,?);
 insertSubscribersBlog:
 INSERT INTO UserSubscribers(uuid, name, url, updated, following)
 VALUES (?,?,?,?, ?);
-
-removeAllAuthorizationToken:
-DELETE FROM AuthorizationToken;
 
 removeAllImages:
 DELETE FROM PostImages;

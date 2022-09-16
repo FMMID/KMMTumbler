@@ -1,10 +1,10 @@
 package com.app.kmmtumbler
 
-import com.app.kmmtumbler.cahe.Database
-import com.app.kmmtumbler.cahe.TumblerAuthorizationDAO
-import com.app.kmmtumbler.cahe.entities.ImagesEntity
-import com.app.kmmtumbler.cahe.entities.SubscribersEntity
-import com.app.kmmtumbler.cahe.entities.TokensEntity
+import com.app.kmmtumbler.cahe.database.Database
+import com.app.kmmtumbler.cahe.database.entities.ImagesEntity
+import com.app.kmmtumbler.cahe.database.entities.SubscribersEntity
+import com.app.kmmtumbler.cahe.settings.TokensPair
+import com.app.kmmtumbler.cahe.settings.TumblerSettings
 import com.app.kmmtumbler.data.UserBlog
 import com.app.kmmtumbler.data.UserImage
 import com.app.kmmtumbler.data.UserSubscriber
@@ -27,13 +27,14 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
 
     private val database = Database(databaseDriveFactory)
 
+    private val settings = TumblerSettings()
+
     private val tumblerAuthorizationAPI: ITumblerAuthorizationAPI = TumblerAuthorizationAPI()
 
-    private val tumblerUserAPI: ITumblerUserAPI =
-        TumblerUserAPI(TumblerAuthorizationDAO(::getActualTokensPair, ::insertNewToken))
+    private val tumblerUserAPI: ITumblerUserAPI = TumblerUserAPI(settings)
 
     override suspend fun authorization(): AuthorizationStatus {
-        return if (database.getAllTokens().isEmpty()) {
+        return if (settings.getTokensPair() == null) {
             AuthorizationStatus.Failure(tumblerAuthorizationAPI.authorization())
         } else {
             AuthorizationStatus.Success("Success")
@@ -43,7 +44,12 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
     override suspend fun getTokenUser(code: String): Boolean {
         Napier.v(tag = SDK_TUMBLER_LOG, message = "Here is the authorization code! $code")
         getToken(code).onSuccess {
-            insertNewToken(it)
+            settings.setTokensPair(
+                tokensPair = TokensPair(
+                    it.accessToken,
+                    it.refreshToken
+                )
+            )
         }.onFailure {
             Napier.v(tag = SDK_TUMBLER_LOG, message = "token response: ${it.message}")
             return false
@@ -78,19 +84,6 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
         return tumblerAuthorizationAPI.getToken(accessCode)
     }
 
-    private fun getActualTokensPair(): TokensEntity? {
-        return database.getAllTokens().firstOrNull()
-    }
-
-    private fun insertNewToken(responseToken: ResponseToken) {
-        database.insertNewToken(
-            TokensEntity(
-                accessToken = responseToken.accessToken,
-                refreshToken = responseToken.refreshToken
-            )
-        )
-    }
-
     private fun insertNewUserImages(uuidBlog: String, uriImage: String) {
         database.insertImagesBlog(
             ImagesEntity(
@@ -108,15 +101,6 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
                 url = userSubscriber.url,
                 updated = userSubscriber.updated.toLong(),
                 following = userSubscriber.following
-            )
-        )
-    }
-
-    private fun insertNewToken(accessToken: String, refreshToken: String) {
-        database.insertNewToken(
-            TokensEntity(
-                accessToken = accessToken,
-                refreshToken = refreshToken
             )
         )
     }

@@ -1,4 +1,4 @@
-package com.app.kmmtumbler.cahe.entities
+package com.app.kmmtumbler.cahe.database.entities
 
 data class ImagesEntity(
     val id: Long = 0,

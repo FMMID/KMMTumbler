@@ -12,20 +12,21 @@ android-material = "1.6.1"
 androidx-appcompat = "1.5.1"
 androidx-constraint-layout = "2.1.4"
 buildkonfig = "0.13.3"
+multiplatform-settings = "0.9"
 
 [libraries]
 #android
-android-material = { module = "com.google.android.material:material", version.ref = "android-material"}
-androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat"}
-androidx-constain-layout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraint-layout"}
+android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-constain-layout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraint-layout" }
 
 #plugins
 plugin-android = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "plugin-kotlin" }
 plugin-kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "plugin-kotlin" }
 plugin-gver = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "plugin-gver" }
-plugin-sqldelight = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "sqldelight"}
-plugin-konfig = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfig"}
+plugin-sqldelight = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "sqldelight" }
+plugin-konfig = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
 
 #ktor
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -33,8 +34,8 @@ ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
-ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor"  }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor"  }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 
 #sqlDelight
 sqldelight = { module = "com.squareup.sqldelight:runtime", version.ref = "sqldelight" }
@@ -50,6 +51,9 @@ kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 #Logger
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
+#Multiplatform cash
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
+
 [bundles]
-plugins = ["plugin-android", "plugin-kotlin",  "plugin-kotlin-serialization", "plugin-gver",
+plugins = ["plugin-android", "plugin-kotlin", "plugin-kotlin-serialization", "plugin-gver",
     "plugin-sqldelight", "plugin-konfig"]

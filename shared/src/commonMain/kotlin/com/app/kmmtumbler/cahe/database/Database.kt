@@ -1,9 +1,8 @@
-package com.app.kmmtumbler.cahe
+package com.app.kmmtumbler.cahe.database
 
 import com.app.kmmtumbler.DatabaseDriveFactory
-import com.app.kmmtumbler.cahe.entities.ImagesEntity
-import com.app.kmmtumbler.cahe.entities.SubscribersEntity
-import com.app.kmmtumbler.cahe.entities.TokensEntity
+import com.app.kmmtumbler.cahe.database.entities.ImagesEntity
+import com.app.kmmtumbler.cahe.database.entities.SubscribersEntity
 import com.app.kmmtumbler.shared.cache.TumblerDatabase
 
 internal class Database(databaseDriveFactory: DatabaseDriveFactory) {
@@ -11,25 +10,12 @@ internal class Database(databaseDriveFactory: DatabaseDriveFactory) {
     private val database = TumblerDatabase(databaseDriveFactory.createDriver())
     private val dbQuery = database.tumblerDatabaseQueries
 
-    internal fun getAllTokens(): List<TokensEntity> {
-        return dbQuery.selectAllTokenPair(::mapTokens).executeAsList()
-    }
-
     internal fun getImagesByBlog(uuid: String): List<ImagesEntity> {
         return dbQuery.selectAllImagesByBlog(uuid, mapper = ::mapImages).executeAsList()
     }
 
     internal fun getSubscribersByBlog(uuid: String): List<SubscribersEntity> {
         return dbQuery.selectAllSubscribers(uuid, mapper = ::mapSubscribers).executeAsList()
-    }
-
-    internal fun insertNewToken(tokenEntity: TokensEntity) {
-        dbQuery.transaction {
-            val list = dbQuery.selectAllTokenPair(::mapTokens).executeAsList()
-            if (list.find { it.accessToken == tokenEntity.accessToken } == null) {
-                dbQuery.insertAuthorizationToken(tokenEntity.accessToken, tokenEntity.refreshToken)
-            }
-        }
     }
 
     internal fun insertImagesBlog(imagesEntity: ImagesEntity) {
@@ -55,16 +41,6 @@ internal class Database(databaseDriveFactory: DatabaseDriveFactory) {
             }
         }
     }
-
-    private fun mapTokens(
-        id: Long,
-        accessToken: String,
-        refreshToken: String
-    ): TokensEntity = TokensEntity(
-        id = id,
-        accessToken = accessToken,
-        refreshToken = refreshToken
-    )
 
     private fun mapImages(
         id: Long,

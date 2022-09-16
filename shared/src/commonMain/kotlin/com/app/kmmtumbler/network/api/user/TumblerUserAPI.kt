@@ -1,7 +1,8 @@
 package com.app.kmmtumbler.network.api.user
 
 import com.app.kmmtumbler.TumblerPublicConfig
-import com.app.kmmtumbler.cahe.ITumblerAuthorizationDAO
+import com.app.kmmtumbler.cahe.settings.TokensPair
+import com.app.kmmtumbler.cahe.settings.TumblerSettings
 import com.app.kmmtumbler.network.request.RequestRefreshToken
 import com.app.kmmtumbler.network.response.ResponseToken
 import com.app.kmmtumbler.network.response.ResponseUserInfo
@@ -20,7 +21,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.http.path
 
-class TumblerUserAPI(private val authorizationDAO: ITumblerAuthorizationDAO) : ITumblerUserAPI {
+class TumblerUserAPI(private val settings: TumblerSettings) : ITumblerUserAPI {
 
     companion object {
         const val HOST_NAME_TUMBLER_API = "api.tumblr.com"
@@ -33,16 +34,20 @@ class TumblerUserAPI(private val authorizationDAO: ITumblerAuthorizationDAO) : I
             bearer {
                 val defaultBearToken = BearerTokens("", "")
                 loadTokens {
-                    val lastActualToken = authorizationDAO.getActualTokensPair() ?: return@loadTokens defaultBearToken
+                    val lastActualToken = settings.getTokensPair() ?: return@loadTokens defaultBearToken
                     BearerTokens(lastActualToken.accessToken, lastActualToken.refreshToken)
                 }
                 refreshTokens {
-                    val lastActualToken =
-                        authorizationDAO.getActualTokensPair() ?: return@refreshTokens defaultBearToken
+                    val lastActualToken = settings.getTokensPair() ?: return@refreshTokens defaultBearToken
                     refreshToken(lastActualToken.refreshToken).getOrElse {
                         return@refreshTokens defaultBearToken
                     }.let {
-                        authorizationDAO.insertNewTokensPair(it.accessToken, it.refreshToken)
+                        settings.setTokensPair(
+                            TokensPair(
+                                it.accessToken,
+                                it.refreshToken
+                            )
+                        )
                         BearerTokens(it.accessToken, it.refreshToken)
                     }
                 }
