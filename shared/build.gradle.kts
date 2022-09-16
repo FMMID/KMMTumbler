@@ -1,8 +1,11 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("com.android.library")
     id("com.squareup.sqldelight")
+    id("com.codingfeline.buildkonfig")
 }
 
 kotlin {
@@ -85,6 +88,20 @@ kotlin {
             iosArm64Test.dependsOn(this)
             iosSimulatorArm64Test.dependsOn(this)
         }
+    }
+}
+
+//allows you to create config variables
+buildkonfig {
+    packageName = "com.app.kmmtumbler"
+    objectName = "TumblerPublicConfig"
+    exposeObjectWithName = "TumblerPublicConfig"
+
+    //To generate BuildKonfig files, run ./gradlew generateBuildKonfig task.
+    defaultConfigs {
+        buildConfigField(STRING, "REDIRECT_URI", "https://www.google.ru/")
+        buildConfigField(STRING, "CLIENT_CONSUMER_KEY", "JPXGabRtZkIVfuaI0vBCXiFFoa4X6vsnFWHlpAxrtm1QYpShRB")
+        buildConfigField(STRING, "CLIENT_SECRET_KEY", "OM589BCr8mP7Mn9coXFF2yqJlgNTpsLBUdjiOhRPSWFDMT97S4")
     }
 }
 

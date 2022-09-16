@@ -1,12 +1,12 @@
 package com.app.kmmtumbler.network.api.user
 
+import com.app.kmmtumbler.TumblerPublicConfig
 import com.app.kmmtumbler.cahe.ITumblerAuthorizationDAO
 import com.app.kmmtumbler.network.request.RequestRefreshToken
 import com.app.kmmtumbler.network.response.ResponseToken
 import com.app.kmmtumbler.network.response.ResponseUserInfo
 import com.app.kmmtumbler.network.response.ResponseUserPosts
 import com.app.kmmtumbler.network.response.ResponseUserSubscribers
-import com.app.kmmtumbler.utils.CommonConst
 import com.app.kmmtumbler.utils.getDefaultHttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth
@@ -63,8 +63,8 @@ class TumblerUserAPI(private val authorizationDAO: ITumblerAuthorizationDAO) : I
                     setBody(
                         RequestRefreshToken(
                             grantType = "refresh_token",
-                            clientId = CommonConst.CLIENT_CONSUMER_KEY,
-                            clientSecret = CommonConst.CLIENT_SECRET_KEY,
+                            clientId = TumblerPublicConfig.CLIENT_CONSUMER_KEY,
+                            clientSecret = TumblerPublicConfig.CLIENT_SECRET_KEY,
                             refreshToken = refreshToken
                         )
                     )
@@ -116,7 +116,7 @@ class TumblerUserAPI(private val authorizationDAO: ITumblerAuthorizationDAO) : I
                     }
                 }.body()
             )
-        } catch (e:Exception){
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }

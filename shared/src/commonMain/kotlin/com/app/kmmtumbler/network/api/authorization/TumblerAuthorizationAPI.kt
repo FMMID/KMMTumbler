@@ -1,11 +1,9 @@
 package com.app.kmmtumbler.network.api.authorization
 
+import com.app.kmmtumbler.TumblerPublicConfig
 import com.app.kmmtumbler.getUniqueState
 import com.app.kmmtumbler.network.request.RequestToken
 import com.app.kmmtumbler.network.response.ResponseToken
-import com.app.kmmtumbler.utils.CommonConst.CLIENT_CONSUMER_KEY
-import com.app.kmmtumbler.utils.CommonConst.CLIENT_SECRET_KEY
-import com.app.kmmtumbler.utils.CommonConst.REDIRECT_URI
 import com.app.kmmtumbler.utils.getDefaultHttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -34,11 +32,11 @@ class TumblerAuthorizationAPI : ITumblerAuthorizationAPI {
             protocol = URLProtocol.HTTPS,
             host = HOST_NAME_TUMBLER,
             parameters = Parameters.build {
-                append("client_id", CLIENT_CONSUMER_KEY)
+                append("client_id", TumblerPublicConfig.CLIENT_CONSUMER_KEY)
                 append("response_type", "code")
                 append("scope", "offline_access")
                 append("state", SESSION_STATE)
-                append("redirect_uri", REDIRECT_URI)
+                append("redirect_uri", TumblerPublicConfig.REDIRECT_URI)
             },
         ).apply { path("oauth2/authorize") }.buildString()
     }
@@ -56,9 +54,9 @@ class TumblerAuthorizationAPI : ITumblerAuthorizationAPI {
                     RequestToken(
                         grantType = "authorization_code",
                         code = accessCode,
-                        clientId = CLIENT_CONSUMER_KEY,
-                        clientSecret = CLIENT_SECRET_KEY,
-                        redirectUri = REDIRECT_URI
+                        clientId = TumblerPublicConfig.CLIENT_CONSUMER_KEY,
+                        clientSecret = TumblerPublicConfig.CLIENT_SECRET_KEY,
+                        redirectUri = TumblerPublicConfig.REDIRECT_URI
                     )
                 )
             }.body())

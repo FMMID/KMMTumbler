@@ -15,7 +15,7 @@ allprojects {
         mavenCentral()
     }
 
-    // ./gradlew dependencyUpdates
+    // run ./gradlew dependencyUpdates
     // Report: build/dependencyUpdates/report.txt
     apply(plugin = "com.github.ben-manes.versions")
 }

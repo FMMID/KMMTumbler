@@ -14,9 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.app.kmmtumbler.DatabaseDriveFactory
 import com.app.kmmtumbler.ISDKTumbler
 import com.app.kmmtumbler.SDKTumbler
+import com.app.kmmtumbler.TumblerPublicConfig
 import com.app.kmmtumbler.network.api.authorization.TumblerAuthorizationAPI
 import com.app.kmmtumbler.utils.AuthorizationStatus
-import com.app.kmmtumbler.utils.CommonConst
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun checkUrl(request: WebResourceRequest): Boolean {
-        if (request.url.toString().startsWith(CommonConst.REDIRECT_URI) &&
+        if (request.url.toString().startsWith(TumblerPublicConfig.REDIRECT_URI) &&
             request.url.getQueryParameter("state") == TumblerAuthorizationAPI.SESSION_STATE
         ) {
             request.url.getQueryParameter("code")?.let { code ->
