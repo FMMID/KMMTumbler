@@ -1,14 +1,15 @@
 plugins {
-    id("com.android.application")
     kotlin("android")
+    id("com.android.application")
 }
 
 android {
-    compileSdk = 32
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
     defaultConfig {
+        minSdk = (findProperty("android.minSdk") as String).toInt()
+        targetSdk = (findProperty("android.targetSdk") as String).toInt()
+
         applicationId = "com.app.kmmtumbler.android"
-        minSdk = 21
-        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
         manifestPlaceholders["appAuthRedirectScheme"] = "https://localhost/"
@@ -22,10 +23,10 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    implementation("com.google.android.material:material:1.4.0")
-    implementation("androidx.appcompat:appcompat:1.3.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.0")
+    implementation(libs.android.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constain.layout)
 
     //Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2")
+    implementation(libs.kotlinx.coroutines.android)
 }

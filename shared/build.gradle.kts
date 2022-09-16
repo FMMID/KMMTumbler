@@ -1,4 +1,3 @@
-
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -20,32 +19,27 @@ kotlin {
     }
 
     sourceSets {
-        val ktorVersion = "2.0.3"
-        val serializationVersion = "1.3.3"
-        val coroutinesVersion = "1.6.3"
-        val sqlDelightVersion = "1.5.3"
 
         val commonMain by getting {
-
             dependencies {
                 //Coroutines
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation(libs.kotlinx.coroutines.core)
 
                 //Serialization
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+                implementation(libs.kotlinx.serialization.core)
 
-                //Loger
-                implementation("io.github.aakira:napier:2.6.1")
+                //Logger
+                implementation(libs.napier)
 
                 //Ktor
-                implementation("io.ktor:ktor-client-core:$ktorVersion")
-                implementation("io.ktor:ktor-client-logging:$ktorVersion")
-                implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("io.ktor:ktor-client-auth:$ktorVersion")
+                implementation(libs.ktor.core)
+                implementation(libs.ktor.logging)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization)
+                implementation(libs.ktor.client.auth)
 
                 //SQLDelight
-                implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
+                implementation(libs.sqldelight)
             }
         }
         val commonTest by getting {
@@ -56,13 +50,13 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 //Coroutines
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+                implementation(libs.kotlinx.coroutines.android)
 
                 //Ktor
-                implementation("io.ktor:ktor-client-android:$ktorVersion")
+                implementation(libs.ktor.client.android)
 
                 //SQLDelight
-                implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
+                implementation(libs.sqldelight.android)
             }
         }
         val androidTest by getting
@@ -72,10 +66,10 @@ kotlin {
         val iosMain by creating {
             dependencies {
                 //Ktor
-                implementation("io.ktor:ktor-client-ios:$ktorVersion")
+                implementation(libs.ktor.client.ios)
 
                 //SQLDelight
-                implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
+                implementation(libs.sqldelight.ios)
             }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
@@ -95,11 +89,11 @@ kotlin {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
-        minSdk = 21
-        targetSdk = 32
+        minSdk = (findProperty("android.minSdk") as String).toInt()
+        targetSdk = (findProperty("android.targetSdk") as String).toInt()
     }
 }
 
