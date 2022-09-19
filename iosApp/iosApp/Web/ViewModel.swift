@@ -12,9 +12,9 @@ import shared
 
 class ViewModel: ObservableObject {
     
-    let sdk:SDKTumbler
+    let sdk:SDKTumblerHelper
     
-    init(sdk:SDKTumbler){
+    init(sdk:SDKTumblerHelper){
         self.sdk = sdk
     }
     

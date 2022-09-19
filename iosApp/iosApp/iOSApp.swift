@@ -4,11 +4,14 @@ import shared
 @main
 struct iOSApp: App {
     
-    let sdk = SDKTumbler(databaseDriveFactory: DatabaseDriveFactory())
+    init() {
+        KoinInitKt.doInitKoin()
+    }
     
-	var body: some Scene {
-		WindowGroup {
+    var body: some Scene {
+        WindowGroup {
+            let sdk = SDKTumblerHelper()
             ContentView(viewModel: .init(sdk: sdk))
-		}
-	}
+        }
+    }
 }

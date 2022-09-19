@@ -11,15 +11,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.app.kmmtumbler.DatabaseDriveFactory
 import com.app.kmmtumbler.ISDKTumbler
-import com.app.kmmtumbler.SDKTumbler
 import com.app.kmmtumbler.TumblerPublicConfig
 import com.app.kmmtumbler.network.api.authorization.TumblerAuthorizationAPI
 import com.app.kmmtumbler.utils.AuthorizationStatus
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var tv: TextView
-    private lateinit var tumblerSDK: ISDKTumbler
+    private val tumblerSDK: ISDKTumbler by inject()
 
     override fun onDestroy() {
         super.onDestroy()
@@ -38,8 +37,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        tumblerSDK = SDKTumbler(DatabaseDriveFactory(this))
 
         tv = findViewById(R.id.text_view)
         webView = findViewById(R.id.webView)

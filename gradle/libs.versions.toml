@@ -22,7 +22,7 @@ android-material = { module = "com.google.android.material:material", version.re
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-constain-layout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraint-layout" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle-version" }
-androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle-version" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle-version" }
 
 #plugins
 plugin-android = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }

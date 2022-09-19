@@ -46,6 +46,9 @@ kotlin {
 
                 //Multiplatform cash
                 implementation(libs.multiplatform.settings)
+
+                //DI
+                api(libs.koin.core)
             }
         }
         val commonTest by getting {

@@ -26,7 +26,13 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constain.layout)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+//    DI
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 }
