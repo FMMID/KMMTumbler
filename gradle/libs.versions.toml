@@ -13,12 +13,16 @@ androidx-appcompat = "1.5.1"
 androidx-constraint-layout = "2.1.4"
 buildkonfig = "0.13.3"
 multiplatform-settings = "0.9"
+koin = "3.2.0"
+lifecycle-version = "2.5.1"
 
 [libraries]
 #android
 android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-constain-layout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraint-layout" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle-version" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle-version" }
 
 #plugins
 plugin-android = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }
@@ -50,6 +54,10 @@ kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 #Logger
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+
+#DI
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = {module = "io.insert-koin:koin-android", version.ref = "koin"}
 
 #Multiplatform cash
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatform-settings" }
