@@ -80,13 +80,13 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
                     uuidBlog = blog.uuid,
                     cash = imagesCash,
                     network = imagesNetwork,
-                    saveDataCallback = ::insertNewUserImages
+                    saveDataCallback = database::insertNewUserImages
                 ),
                 subscribers = getUserData<CashSubscribersEntity, ResponseUserSubscribers, UserSubscriber>(
                     uuidBlog = blog.uuid,
                     cash = subscribersCash,
                     network = subscribersNetwork,
-                    saveDataCallback = ::insertNewUserSubscribers
+                    saveDataCallback = database::insertNewUserSubscribers
                 )
             )
         }
@@ -94,30 +94,5 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
 
     private suspend fun getToken(accessCode: String): Result<ResponseToken> {
         return tumblerAuthorizationAPI.getToken(accessCode)
-    }
-
-    private fun insertNewUserImages(uuidBlog: String, userImage: List<UserImage>) {
-        userImage.map {
-            database.insertImagesBlog(
-                ImagesEntity(
-                    uuidBlog = uuidBlog,
-                    uriImage = it.uri
-                )
-            )
-        }
-    }
-
-    private fun insertNewUserSubscribers(uuidBlog: String, userSubscriber: List<UserSubscriber>) {
-        userSubscriber.map {
-            database.insertSubscribers(
-                SubscribersEntity(
-                    uuid = uuidBlog,
-                    name = it.name,
-                    url = it.url,
-                    updated = it.updated.toLong(),
-                    following = it.following
-                )
-            )
-        }
     }
 }

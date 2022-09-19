@@ -3,6 +3,8 @@ package com.app.kmmtumbler.cahe.database
 import com.app.kmmtumbler.DatabaseDriveFactory
 import com.app.kmmtumbler.cahe.database.entities.ImagesEntity
 import com.app.kmmtumbler.cahe.database.entities.SubscribersEntity
+import com.app.kmmtumbler.data.UserImage
+import com.app.kmmtumbler.data.UserSubscriber
 import com.app.kmmtumbler.shared.cache.TumblerDatabase
 
 internal class Database(databaseDriveFactory: DatabaseDriveFactory) {
@@ -24,6 +26,31 @@ internal class Database(databaseDriveFactory: DatabaseDriveFactory) {
             if (list.find { it.imageUri == imagesEntity.uriImage } == null) {
                 dbQuery.insertImagesBlog(imagesEntity.uuidBlog, imagesEntity.uriImage)
             }
+        }
+    }
+
+    internal fun insertNewUserImages(uuidBlog: String, userImage: List<UserImage>) {
+        userImage.map {
+            insertImagesBlog(
+                ImagesEntity(
+                    uuidBlog = uuidBlog,
+                    uriImage = it.uri
+                )
+            )
+        }
+    }
+
+    internal fun insertNewUserSubscribers(uuidBlog: String, userSubscriber: List<UserSubscriber>) {
+        userSubscriber.map {
+            insertSubscribers(
+                SubscribersEntity(
+                    uuid = uuidBlog,
+                    name = it.name,
+                    url = it.url,
+                    updated = it.updated.toLong(),
+                    following = it.following
+                )
+            )
         }
     }
 
