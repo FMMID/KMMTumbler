@@ -11,6 +11,7 @@ import SwiftUI
 import Combine
 import WebKit
 import UIKit
+import shared
 
 struct WebView: UIViewRepresentable {
     
@@ -126,7 +127,7 @@ struct WebView: UIViewRepresentable {
         
         func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
             print ("didReceiveServerRedirectForProvisionalNavigation")
-            if (webView.url?.host == "www.google.ru"){
+            if (webView.url?.host == URL.init(string:TumblerPublicConfig().REDIRECT_URI)?.host) {
                 let components = URLComponents(
                     url: webView.url!,
                     resolvingAgainstBaseURL: false

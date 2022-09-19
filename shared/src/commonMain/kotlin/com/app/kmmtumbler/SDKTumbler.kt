@@ -1,6 +1,8 @@
 package com.app.kmmtumbler
 
 import com.app.kmmtumbler.cahe.database.Database
+import com.app.kmmtumbler.cahe.database.cashentities.CashImagesEntity
+import com.app.kmmtumbler.cahe.database.cashentities.CashSubscribersEntity
 import com.app.kmmtumbler.cahe.database.entities.ImagesEntity
 import com.app.kmmtumbler.cahe.database.entities.SubscribersEntity
 import com.app.kmmtumbler.cahe.settings.TokensPair
@@ -16,7 +18,7 @@ import com.app.kmmtumbler.network.response.ResponseToken
 import com.app.kmmtumbler.network.response.ResponseUserPosts
 import com.app.kmmtumbler.network.response.ResponseUserSubscribers
 import com.app.kmmtumbler.utils.AuthorizationStatus
-import com.app.kmmtumbler.utils.parseImage
+import com.app.kmmtumbler.utils.getUserData
 import io.github.aakira.napier.Napier
 
 class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
@@ -62,8 +64,8 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
             Napier.v(tag = SDK_TUMBLER_LOG, message = "getUserInfo error: $it")
             return listOf()
         }.responseUserBlogsData.userBlogsData.blogsData.map { blog ->
-            val imagesCash = database.getImagesByBlog(blog.uuid)
-            val subscribersCash = database.getSubscribersByBlog(blog.uuid)
+            val imagesCash = CashImagesEntity(database.getImagesByBlog(blog.uuid))
+            val subscribersCash = CashSubscribersEntity(database.getSubscribersByBlog(blog.uuid))
             val imagesNetwork = tumblerUserAPI.getPosts(blog.uuid).getOrElse {
                 Napier.v(tag = SDK_TUMBLER_LOG, message = "getPosts error: $it")
                 null
@@ -74,8 +76,18 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
             }
             UserBlog(
                 uuidBlog = blog.uuid,
-                images = getImages(blog.uuid, imagesCash, imagesNetwork),
-                subscribers = getSubscribers(blog.uuid, subscribersCash, subscribersNetwork)
+                images = getUserData<CashImagesEntity, ResponseUserPosts, UserImage>(
+                    uuidBlog = blog.uuid,
+                    cash = imagesCash,
+                    network = imagesNetwork,
+                    saveDataCallback = ::insertNewUserImages
+                ),
+                subscribers = getUserData<CashSubscribersEntity, ResponseUserSubscribers, UserSubscriber>(
+                    uuidBlog = blog.uuid,
+                    cash = subscribersCash,
+                    network = subscribersNetwork,
+                    saveDataCallback = ::insertNewUserSubscribers
+                )
             )
         }
     }
@@ -84,78 +96,28 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
         return tumblerAuthorizationAPI.getToken(accessCode)
     }
 
-    private fun insertNewUserImages(uuidBlog: String, uriImage: String) {
-        database.insertImagesBlog(
-            ImagesEntity(
-                uuidBlog = uuidBlog,
-                uriImage = uriImage
+    private fun insertNewUserImages(uuidBlog: String, userImage: List<UserImage>) {
+        userImage.map {
+            database.insertImagesBlog(
+                ImagesEntity(
+                    uuidBlog = uuidBlog,
+                    uriImage = it.uri
+                )
             )
-        )
-    }
-
-    private fun insertNewUserSubscribers(uuidBlog: String, userSubscriber: UserSubscriber) {
-        database.insertSubscribers(
-            SubscribersEntity(
-                uuid = uuidBlog,
-                name = userSubscriber.name,
-                url = userSubscriber.url,
-                updated = userSubscriber.updated.toLong(),
-                following = userSubscriber.following
-            )
-        )
-    }
-
-    private fun getSubscribers(
-        uuidBlog: String,
-        casSubscriber: List<SubscribersEntity>,
-        networkSubscribers: ResponseUserSubscribers?
-    ): List<UserSubscriber> {
-        return when {
-            networkSubscribers != null && networkSubscribers.response.users.size >= casSubscriber.size -> {
-                networkSubscribers.response.users.map {
-                    val data = UserSubscriber(
-                        name = it.name,
-                        url = it.url,
-                        updated = it.updated,
-                        following = it.following
-                    )
-                    insertNewUserSubscribers(uuidBlog, data)
-                    data
-                }
-            }
-            networkSubscribers == null && casSubscriber.isNotEmpty() -> {
-                casSubscriber.map {
-                    UserSubscriber(
-                        name = it.name,
-                        url = it.url,
-                        updated = it.updated.toInt(),
-                        following = it.following
-                    )
-                }
-            }
-            else -> listOf()
         }
     }
 
-    private fun getImages(
-        uuidBlog: String,
-        databaseCash: List<ImagesEntity>,
-        networkData: ResponseUserPosts?
-    ): List<UserImage> {
-        return when {
-            networkData != null && networkData.response.blog.size >= databaseCash.size -> {
-                networkData.response.blog.map {
-                    val parsedBody = it.body.parseImage() ?: ""
-                    insertNewUserImages(uuidBlog, parsedBody)
-                    UserImage(uri = parsedBody)
-                }
-            }
-            networkData == null && databaseCash.isNotEmpty() -> {
-                databaseCash.map {
-                    UserImage(uri = it.uriImage)
-                }
-            }
-            else -> listOf()
+    private fun insertNewUserSubscribers(uuidBlog: String, userSubscriber: List<UserSubscriber>) {
+        userSubscriber.map {
+            database.insertSubscribers(
+                SubscribersEntity(
+                    uuid = uuidBlog,
+                    name = it.name,
+                    url = it.url,
+                    updated = it.updated.toLong(),
+                    following = it.following
+                )
+            )
         }
     }
 }
