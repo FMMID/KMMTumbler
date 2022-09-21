@@ -26,7 +26,7 @@ struct ContentView: View {
     }
 
     func getUserImages() {
-        self.viewModel.sdk.getUserImages(){ result, error in
+        self.viewModel.sdk.getUserData(){ result, error in
             if let result = result {
                 responseBody = result.description
                 isShowWebView = false
@@ -49,6 +49,15 @@ struct ContentView: View {
     }
     
     var body: some View {
+        
+        HStack {
+            Image(systemName: "photo")
+            VStack(alignment: .leading) {
+                Text("Simon Ng")
+                Text("Founder of AppCoda")
+            }
+        }
+
         Text(responseBody)
             .onReceive(self.viewModel.authorizationCode.receive(on: RunLoop.main)){ value in
                 loadUserTokens(code: value)

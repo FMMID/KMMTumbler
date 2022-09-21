@@ -12,5 +12,5 @@ interface ISDKTumbler {
     suspend fun getTokenUser(code: String): Boolean
 
     @Throws(Exception::class)
-    suspend fun getUserImages(): List<UserBlog>
+    suspend fun getUserData(): List<UserBlog>
 }

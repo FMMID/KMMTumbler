@@ -10,6 +10,8 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
+var isInit = false
+
 fun getDefaultHttpClient(tag: String) = HttpClient {
     install(ContentNegotiation) {
         json(Json {
@@ -26,4 +28,9 @@ fun getDefaultHttpClient(tag: String) = HttpClient {
             }
         }
     }
-}.also { initLogger() }
+}.also {
+    if (!isInit) {
+        initLogger()
+        isInit = true
+    }
+}

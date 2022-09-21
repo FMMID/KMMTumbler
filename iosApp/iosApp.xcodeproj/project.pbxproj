@@ -10,6 +10,8 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
+		37B51E0628DB5D90007DC289 /* FollowingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B51E0528DB5D90007DC289 /* FollowingView.swift */; };
+		37C2A4AA28D99B28008FC457 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C2A4A928D99B28008FC457 /* MyViewController.swift */; };
 		37CF721828D0B1BB00B82CA8 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CF721728D0B1BB00B82CA8 /* WebView.swift */; };
 		37CF721A28D0B37800B82CA8 /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CF721928D0B37800B82CA8 /* LoaderView.swift */; };
 		37CF721C28D0B3BC00B82CA8 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CF721B28D0B3BC00B82CA8 /* ViewModel.swift */; };
@@ -34,6 +36,8 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
+		37B51E0528DB5D90007DC289 /* FollowingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingView.swift; sourceTree = "<group>"; };
+		37C2A4A928D99B28008FC457 /* MyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
 		37CF721728D0B1BB00B82CA8 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		37CF721928D0B37800B82CA8 /* LoaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderView.swift; sourceTree = "<group>"; };
 		37CF721B28D0B3BC00B82CA8 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
@@ -69,6 +73,8 @@
 				37CF721928D0B37800B82CA8 /* LoaderView.swift */,
 				37CF721B28D0B3BC00B82CA8 /* ViewModel.swift */,
 				37CF721D28D0B41C00B82CA8 /* WebNavigationView.swift */,
+				37C2A4A928D99B28008FC457 /* MyViewController.swift */,
+				37B51E0528DB5D90007DC289 /* FollowingView.swift */,
 			);
 			path = Web;
 			sourceTree = "<group>";
@@ -205,7 +211,9 @@
 			files = (
 				37CF721C28D0B3BC00B82CA8 /* ViewModel.swift in Sources */,
 				37CF721828D0B1BB00B82CA8 /* WebView.swift in Sources */,
+				37B51E0628DB5D90007DC289 /* FollowingView.swift in Sources */,
 				37CF721A28D0B37800B82CA8 /* LoaderView.swift in Sources */,
+				37C2A4AA28D99B28008FC457 /* MyViewController.swift in Sources */,
 				37CF721E28D0B41C00B82CA8 /* WebNavigationView.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,

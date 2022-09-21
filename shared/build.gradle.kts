@@ -25,6 +25,9 @@ kotlin {
 
         val commonMain by getting {
             dependencies {
+                //Paging
+                api(libs.multiplatform.paging)
+
                 //Coroutines
                 implementation(libs.kotlinx.coroutines.core)
 

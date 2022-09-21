@@ -3,8 +3,6 @@ package com.app.kmmtumbler
 import com.app.kmmtumbler.cahe.database.Database
 import com.app.kmmtumbler.cahe.database.cashentities.CashImagesEntity
 import com.app.kmmtumbler.cahe.database.cashentities.CashSubscribersEntity
-import com.app.kmmtumbler.cahe.database.entities.ImagesEntity
-import com.app.kmmtumbler.cahe.database.entities.SubscribersEntity
 import com.app.kmmtumbler.cahe.settings.TokensPair
 import com.app.kmmtumbler.cahe.settings.TumblerSettings
 import com.app.kmmtumbler.data.UserBlog
@@ -59,7 +57,7 @@ class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
         return true
     }
 
-    override suspend fun getUserImages(): List<UserBlog> {
+    override suspend fun getUserData(): List<UserBlog> {
         return tumblerUserAPI.getUserInfo().getOrElse {
             Napier.v(tag = SDK_TUMBLER_LOG, message = "getUserInfo error: $it")
             return listOf()

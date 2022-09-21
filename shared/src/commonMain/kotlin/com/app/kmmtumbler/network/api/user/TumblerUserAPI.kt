@@ -4,7 +4,9 @@ import com.app.kmmtumbler.TumblerPublicConfig
 import com.app.kmmtumbler.cahe.settings.TokensPair
 import com.app.kmmtumbler.cahe.settings.TumblerSettings
 import com.app.kmmtumbler.network.request.RequestRefreshToken
+import com.app.kmmtumbler.network.request.RequestUserFollowing
 import com.app.kmmtumbler.network.response.ResponseToken
+import com.app.kmmtumbler.network.response.ResponseUserFollowing
 import com.app.kmmtumbler.network.response.ResponseUserInfo
 import com.app.kmmtumbler.network.response.ResponseUserPosts
 import com.app.kmmtumbler.network.response.ResponseUserSubscribers
@@ -118,6 +120,24 @@ class TumblerUserAPI(private val settings: TumblerSettings) : ITumblerUserAPI {
                         protocol = URLProtocol.HTTPS
                         host = HOST_NAME_TUMBLER_API
                         path("${TUMBLER_API_VERSION}/blog/$uuidBlog/followers")
+                    }
+                }.body()
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getFollowing(uuidBlog: String, request: RequestUserFollowing): Result<ResponseUserFollowing> {
+        return try {
+            Result.success(
+                httpClient.get {
+                    url {
+                        protocol = URLProtocol.HTTPS
+                        host = HOST_NAME_TUMBLER_API
+                        parameters.append("limit", request.limit.toString())
+                        parameters.append("offset", request.offset.toString())
+                        path("${TUMBLER_API_VERSION}/blog/$uuidBlog/following")
                     }
                 }.body()
             )

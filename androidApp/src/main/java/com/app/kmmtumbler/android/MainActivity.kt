@@ -9,23 +9,36 @@ import android.view.View
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.app.kmmtumbler.ISDKTumbler
 import com.app.kmmtumbler.TumblerPublicConfig
+import com.app.kmmtumbler.data.UserBlog
 import com.app.kmmtumbler.network.api.authorization.TumblerAuthorizationAPI
+import com.app.kmmtumbler.paging.PagingFollowingController
 import com.app.kmmtumbler.utils.AuthorizationStatus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : AppCompatActivity() {
 
     private val scope = MainScope()
 
     private lateinit var webView: WebView
-    private lateinit var tv: TextView
+    private lateinit var text: TextView
+    private lateinit var pagingButton: Button
+    private lateinit var pagingRecyclerView: RecyclerView
+    private lateinit var userData: List<UserBlog>
     private val tumblerSDK: ISDKTumbler by inject()
 
     override fun onDestroy() {
@@ -33,13 +46,37 @@ class MainActivity : AppCompatActivity() {
         scope.cancel()
     }
 
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        tv = findViewById(R.id.text_view)
+        pagingButton = findViewById(R.id.pagingButton)
+        pagingRecyclerView = findViewById(R.id.pagignRecyclerView)
+        text = findViewById(R.id.mainText)
         webView = findViewById(R.id.webView)
+
+        text.text = "Loading..."
+        pagingRecyclerView.layoutManager = LinearLayoutManager(this)
+        pagingButton.visibility = View.INVISIBLE
+        pagingRecyclerView.visibility = View.INVISIBLE
+
+        pagingButton.setOnClickListener {
+            pagingRecyclerView.visibility = View.VISIBLE
+            pagingButton.visibility = View.INVISIBLE
+            text.visibility = View.INVISIBLE
+            val adapter = UserFollowingDataAdapter()
+            pagingRecyclerView.adapter = adapter
+            val pagingFollowingController: PagingFollowingController by inject {
+                parametersOf(
+                    userData.first().uuidBlog,
+                    scope
+                )
+            }
+            pagingFollowingController.pagingData.onEach { adapter.submitData(it) }.launchIn(scope)
+        }
+
         webView.webViewClient = object : WebViewClient() {
 
             var progressDialog: ProgressDialog? = ProgressDialog(webView.context)
@@ -62,10 +99,14 @@ class MainActivity : AppCompatActivity() {
                     scope.launch {
                         kotlin.runCatching {
                             checkUrl(it)
-                        }.onSuccess {
-                            if (it) {
+                        }.onSuccess { successCheck ->
+                            if (successCheck) {
                                 view?.visibility = View.INVISIBLE
-                                tv.text = tumblerSDK.getUserImages().toString()
+                                tumblerSDK.getUserData().let {
+                                    userData = it
+                                    text.text = it.toString()
+                                }
+                                pagingButton.visibility = View.VISIBLE
                             }
                         }
                     }
@@ -81,24 +122,20 @@ class MainActivity : AppCompatActivity() {
             javaScriptEnabled = true
             domStorageEnabled = true
         }
-        tv.text = "Loading..."
 
         scope.launch {
-            kotlin.runCatching {
-                tumblerSDK.authorization()
-            }.onSuccess {
-                when (it) {
-                    is AuthorizationStatus.Success -> {
-                        webView.visibility = View.INVISIBLE
-                        tv.text = tumblerSDK.getUserImages().toString()
-                    }
-                    is AuthorizationStatus.Failure -> {
-                        webView.loadUrl(it.value)
+            when (val result = tumblerSDK.authorization()) {
+                is AuthorizationStatus.Success -> {
+                    webView.visibility = View.INVISIBLE
+                    pagingButton.visibility = View.VISIBLE
+                    tumblerSDK.getUserData().let {
+                        userData = it
+                        text.text = it.toString()
                     }
                 }
-            }.onFailure {
-                webView.visibility = View.INVISIBLE
-                tv.text = it.localizedMessage
+                is AuthorizationStatus.Failure -> {
+                    webView.loadUrl(result.value)
+                }
             }
         }
     }

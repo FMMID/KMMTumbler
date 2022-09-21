@@ -32,7 +32,10 @@ dependencies {
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-//    DI
+    //DI
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+
+    //Paging
+    implementation(libs.androidx.paging)
 }
