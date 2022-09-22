@@ -8,6 +8,7 @@ import com.kuuurt.paging.multiplatform.PagingConfig
 import com.kuuurt.paging.multiplatform.PagingData
 import com.kuuurt.paging.multiplatform.PagingResult
 import com.kuuurt.paging.multiplatform.helpers.cachedIn
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -23,7 +24,7 @@ class PagingFollowingController(
     }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    private val pager = Pager<Int, UserFollowing>(
+    val pager = Pager<Int, UserFollowing>(
         clientScope = clientScope,
         config = PagingConfig(
             pageSize = PAGE_LIMIT,
@@ -49,16 +50,21 @@ class PagingFollowingController(
                     )
                 }
             }
+            Napier.v (tag ="PagigngFollowController",message="data received key:$currentKey")
             PagingResult(
                 items = items,
                 currentKey = currentKey,
-                prevKey = { return@PagingResult null },
-                nextKey = { return@PagingResult currentKey + PAGE_LIMIT }
+                prevKey = {  null },
+                nextKey = { currentKey + PAGE_LIMIT }
             )
         }
     )
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val pagingData: Flow<PagingData<UserFollowing>>
+    val pagingDataAndroid: Flow<PagingData<UserFollowing>>
         get() = pager.pagingData.cachedIn(clientScope)
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val pagingDataIOS: CommonFlow<PagingData<UserFollowing>>
+        get() = pager.pagingData.cachedIn(clientScope).asCommonFlow()
 }

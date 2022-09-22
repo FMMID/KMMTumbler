@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import shared
 
-struct UserView: View {
+struct FollowingView: View {
  
     var following:UserFollowing
     
@@ -18,12 +18,6 @@ struct UserView: View {
             HStack(alignment: .center, spacing: nil, content: {
                 Text(following.name)
             })
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .leading)
-            .background(Color.black)
-            .cornerRadius(10.0)
-            .shadow(color: Color.black.opacity(0.2), radius: 2, x: 0, y: 0)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 5)
         }
 }
 

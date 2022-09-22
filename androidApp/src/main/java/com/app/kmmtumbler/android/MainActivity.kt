@@ -20,8 +20,6 @@ import com.app.kmmtumbler.data.UserBlog
 import com.app.kmmtumbler.network.api.authorization.TumblerAuthorizationAPI
 import com.app.kmmtumbler.paging.PagingFollowingController
 import com.app.kmmtumbler.utils.AuthorizationStatus
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
@@ -74,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                     scope
                 )
             }
-            pagingFollowingController.pagingData.onEach { adapter.submitData(it) }.launchIn(scope)
+            pagingFollowingController.pagingDataAndroid.onEach { adapter.submitData(it) }.launchIn(scope)
         }
 
         webView.webViewClient = object : WebViewClient() {
