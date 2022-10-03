@@ -1,4 +1,4 @@
-package com.app.kmmtumbler
+package com.app.kmmtumbler.repositories
 
 import com.app.kmmtumbler.cahe.database.Database
 import com.app.kmmtumbler.cahe.database.cashentities.CashImagesEntity
@@ -9,9 +9,7 @@ import com.app.kmmtumbler.data.UserBlog
 import com.app.kmmtumbler.data.UserImage
 import com.app.kmmtumbler.data.UserSubscriber
 import com.app.kmmtumbler.network.api.authorization.ITumblerAuthorizationAPI
-import com.app.kmmtumbler.network.api.authorization.TumblerAuthorizationAPI
 import com.app.kmmtumbler.network.api.user.ITumblerUserAPI
-import com.app.kmmtumbler.network.api.user.TumblerUserAPI
 import com.app.kmmtumbler.network.response.ResponseToken
 import com.app.kmmtumbler.network.response.ResponseUserPosts
 import com.app.kmmtumbler.network.response.ResponseUserSubscribers
@@ -19,19 +17,16 @@ import com.app.kmmtumbler.utils.AuthorizationStatus
 import com.app.kmmtumbler.utils.getUserData
 import io.github.aakira.napier.Napier
 
-class SDKTumbler(databaseDriveFactory: DatabaseDriveFactory) : ISDKTumbler {
+class TumblerRepository(
+    private val database: Database,
+    private val settings: TumblerSettings,
+    private val tumblerAuthorizationAPI: ITumblerAuthorizationAPI,
+    private val tumblerUserAPI: ITumblerUserAPI
+) : ITumblerRepository {
 
     companion object {
         private const val SDK_TUMBLER_LOG = "SDKTumbler"
     }
-
-    private val database = Database(databaseDriveFactory)
-
-    private val settings = TumblerSettings()
-
-    private val tumblerAuthorizationAPI: ITumblerAuthorizationAPI = TumblerAuthorizationAPI()
-
-    private val tumblerUserAPI: ITumblerUserAPI = TumblerUserAPI(settings)
 
     override suspend fun authorization(): AuthorizationStatus {
         return if (settings.getTokensPair() == null) {

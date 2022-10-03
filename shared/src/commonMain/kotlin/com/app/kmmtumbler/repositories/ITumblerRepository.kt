@@ -1,9 +1,9 @@
-package com.app.kmmtumbler
+package com.app.kmmtumbler.repositories
 
 import com.app.kmmtumbler.data.UserBlog
 import com.app.kmmtumbler.utils.AuthorizationStatus
 
-interface ISDKTumbler {
+interface ITumblerRepository {
 
     @Throws(Exception::class)
     suspend fun authorization(): AuthorizationStatus

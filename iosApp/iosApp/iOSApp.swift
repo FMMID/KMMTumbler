@@ -10,7 +10,7 @@ struct iOSApp: App {
     
     var body: some Scene {
         WindowGroup {
-            let sdk = SDKTumblerHelper()
+            let sdk = KotlinDependencies().getViewModel()
             ContentView(viewModel: .init(sdk: sdk))
         }
     }

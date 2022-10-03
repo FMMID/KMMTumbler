@@ -7,7 +7,7 @@ import com.app.kmmtumbler.data.UserImage
 import com.app.kmmtumbler.data.UserSubscriber
 import com.app.kmmtumbler.shared.cache.TumblerDatabase
 
-internal class Database(databaseDriveFactory: DatabaseDriveFactory) {
+class Database(databaseDriveFactory: DatabaseDriveFactory) {
 
     private val database = TumblerDatabase(databaseDriveFactory.createDriver())
     private val dbQuery = database.tumblerDatabaseQueries
@@ -20,7 +20,7 @@ internal class Database(databaseDriveFactory: DatabaseDriveFactory) {
         return dbQuery.selectAllSubscribers(uuid, mapper = ::mapSubscribers).executeAsList()
     }
 
-    internal fun insertImagesBlog(imagesEntity: ImagesEntity) {
+    private fun insertImagesBlog(imagesEntity: ImagesEntity) {
         dbQuery.transaction {
             val list = dbQuery.selectAllImagesByBlog(imagesEntity.uuidBlog).executeAsList()
             if (list.find { it.imageUri == imagesEntity.uriImage } == null) {
@@ -54,7 +54,7 @@ internal class Database(databaseDriveFactory: DatabaseDriveFactory) {
         }
     }
 
-    internal fun insertSubscribers(subscribersEntity: SubscribersEntity) {
+    private fun insertSubscribers(subscribersEntity: SubscribersEntity) {
         dbQuery.transaction {
             val list = dbQuery.selectAllSubscribers(subscribersEntity.uuid).executeAsList()
             if (list.find { it.url == subscribersEntity.url } == null) {

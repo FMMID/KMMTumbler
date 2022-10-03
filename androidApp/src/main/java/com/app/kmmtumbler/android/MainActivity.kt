@@ -14,11 +14,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.app.kmmtumbler.ISDKTumbler
 import com.app.kmmtumbler.TumblerPublicConfig
-import com.app.kmmtumbler.data.UserBlog
+import com.app.kmmtumbler.models.TumblerViewModel
 import com.app.kmmtumbler.network.api.authorization.TumblerAuthorizationAPI
-import com.app.kmmtumbler.paging.PagingFollowingController
 import com.app.kmmtumbler.utils.AuthorizationStatus
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -26,7 +24,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.core.parameter.parametersOf
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,8 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var text: TextView
     private lateinit var pagingButton: Button
     private lateinit var pagingRecyclerView: RecyclerView
-    private lateinit var userData: List<UserBlog>
-    private val tumblerSDK: ISDKTumbler by inject()
+    private val tumblerViewModel: TumblerViewModel by inject()
 
     override fun onDestroy() {
         super.onDestroy()
@@ -66,13 +62,8 @@ class MainActivity : AppCompatActivity() {
             text.visibility = View.INVISIBLE
             val adapter = UserFollowingDataAdapter()
             pagingRecyclerView.adapter = adapter
-            val pagingFollowingController: PagingFollowingController by inject {
-                parametersOf(
-                    userData.first().uuidBlog,
-                    scope
-                )
-            }
-            pagingFollowingController.pagingDataAndroid.onEach { adapter.submitData(it) }.launchIn(scope)
+            tumblerViewModel.pagingFollowingController?.pagingDataAndroid?.onEach { adapter.submitData(it) }
+                ?.launchIn(scope)
         }
 
         webView.webViewClient = object : WebViewClient() {
@@ -100,10 +91,7 @@ class MainActivity : AppCompatActivity() {
                         }.onSuccess { successCheck ->
                             if (successCheck) {
                                 view?.visibility = View.INVISIBLE
-                                tumblerSDK.getUserData().let {
-                                    userData = it
-                                    text.text = it.toString()
-                                }
+                                tumblerViewModel.getUserData().let { text.text = it.toString() }
                                 pagingButton.visibility = View.VISIBLE
                             }
                         }
@@ -122,14 +110,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         scope.launch {
-            when (val result = tumblerSDK.authorization()) {
+            when (val result = tumblerViewModel.authorization()) {
                 is AuthorizationStatus.Success -> {
                     webView.visibility = View.INVISIBLE
                     pagingButton.visibility = View.VISIBLE
-                    tumblerSDK.getUserData().let {
-                        userData = it
-                        text.text = it.toString()
-                    }
+                    tumblerViewModel.getUserData().let { text.text = it.toString() }
                 }
                 is AuthorizationStatus.Failure -> {
                     webView.loadUrl(result.value)
@@ -144,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         ) {
             request.url.getQueryParameter("code")?.let { code ->
                 Log.d("OAuth", "Here is the authorization code! $code")
-                return tumblerSDK.getTokenUser(code)
+                return tumblerViewModel.getTokenUser(code)
             } ?: run {
                 Log.d("OAuth", "Authorization code not received :(")
                 return false

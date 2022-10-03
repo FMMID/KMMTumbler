@@ -69,6 +69,9 @@ kotlin {
 
                 //SQLDelight
                 implementation(libs.sqldelight.android)
+
+                //Androidx
+                implementation(libs.androidx.lifecycle.viewmodel.ktx)
             }
         }
         val androidTest by getting

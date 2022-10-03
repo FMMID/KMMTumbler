@@ -14,28 +14,26 @@ class FollowingViewModel : ObservableObject {
     
     @Published public var users:[UserFollowing] = []
     
-    var pagingController:PagingFollowingControllerHelper? = nil
+    var pagingController:PagingFollowingController? = nil
     var hasNextPage:Bool = false
     
-    init(uuid:String) {
-        if (uuid != ""){
-        pagingController = PagingFollowingControllerHelper(uuidBlog: uuid)
-        }
+    init(pagingController:PagingFollowingController?) {
+        self.pagingController = pagingController
     }
     
     func fetchFollowing() {
         if (pagingController == nil) {return}
-        pagingController!.pagingFollowingController.pagingDataIOS.watch { nullablePagingData in
+        pagingController!.pagingDataIOS.watch { nullablePagingData in
             guard let list = nullablePagingData?.compactMap({ $0 as? UserFollowing }) else {
                 return
             }
             self.users = list
-            self.hasNextPage = (self.pagingController!.pagingFollowingController.pager.hasNextPage)
+            self.hasNextPage = (self.pagingController!.pager.hasNextPage)
         }
     }
     
     func fetchNextData() {
         if (pagingController == nil || hasNextPage == false) {return}
-        self.pagingController!.pagingFollowingController.pager.loadNext()
+        self.pagingController!.pager.loadNext()
     }
 }

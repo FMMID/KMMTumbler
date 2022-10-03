@@ -4,7 +4,6 @@ import shared
 struct ContentView: View {
     @State var authorization = "Loading..."
     @ObservedObject private(set) var viewModel: ViewModel
-    @State var uuidBlog:String = ""
     @State var isLoaderVisible = false
     @State var responseBody = "Empty"
     @State var isShowWebView = true
@@ -30,7 +29,6 @@ struct ContentView: View {
         self.viewModel.sdk.getUserData(){ result, error in
             if let result = result {
                 responseBody = result.description
-                uuidBlog = result.first?.uuidBlog ?? ""
                 isShowWebView = false
                 print(responseBody)
             }else if let error = error {
@@ -65,14 +63,14 @@ struct ContentView: View {
                         type: .public,
                         url: authorization,
                         viewModel: viewModel)
-                    ListFollowingView(usersVM: FollowingViewModel(uuid: uuidBlog)).hidden()
+                    ListFollowingView(usersVM: FollowingViewModel(pagingController: viewModel.sdk.pagingFollowingController)).hidden()
                 } else {
                     WebNavigationView(viewModel: viewModel).hidden()
                     WebView(
                         type: .public,
                         url: authorization,
                         viewModel: viewModel).hidden()
-                    ListFollowingView(usersVM: FollowingViewModel(uuid: uuidBlog))
+                    ListFollowingView(usersVM: FollowingViewModel(pagingController: viewModel.sdk.pagingFollowingController))
                 }
             }
             if isLoaderVisible {
