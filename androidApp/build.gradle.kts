@@ -38,4 +38,7 @@ dependencies {
 
     //Paging
     implementation(libs.androidx.paging)
+
+    //Yookass
+    implementation(libs.yookassa.android)
 }
