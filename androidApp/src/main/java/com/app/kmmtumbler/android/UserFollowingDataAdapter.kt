@@ -12,7 +12,6 @@ import com.app.kmmtumbler.data.UserFollowing
 class UserFollowingDataAdapter :
     PagingDataAdapter<UserFollowing, UserFollowingDataAdapter.UserFollowingDataViewHolder>(userFollowingDiffUtil) {
 
-
     class UserFollowingDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val userFollowingData: TextView = itemView.findViewById(R.id.userFollowingData)

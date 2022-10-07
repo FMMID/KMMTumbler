@@ -28,7 +28,6 @@ import org.koin.android.ext.android.inject
 class MainActivity : AppCompatActivity() {
 
     private val scope = MainScope()
-
     private lateinit var webView: WebView
     private lateinit var text: TextView
     private lateinit var pagingButton: Button
@@ -40,12 +39,10 @@ class MainActivity : AppCompatActivity() {
         scope.cancel()
     }
 
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         pagingButton = findViewById(R.id.pagingButton)
         pagingRecyclerView = findViewById(R.id.pagignRecyclerView)
         text = findViewById(R.id.mainText)
@@ -132,7 +129,6 @@ class MainActivity : AppCompatActivity() {
                 return tumblerViewModel.getTokenUser(code)
             } ?: run {
                 Log.d("OAuth", "Authorization code not received :(")
-                return false
             }
         }
         return false

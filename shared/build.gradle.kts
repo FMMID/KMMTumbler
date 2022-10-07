@@ -1,4 +1,5 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import org.intellij.markdown.MarkdownTokenTypes.Companion.URL
 
 plugins {
     kotlin("multiplatform")
@@ -10,7 +11,6 @@ plugins {
 
 kotlin {
     android()
-
     listOf(
         iosX64(),
         iosArm64(),
@@ -54,11 +54,7 @@ kotlin {
                 api(libs.koin.core)
             }
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
+        val commonTest by getting
         val androidMain by getting {
             dependencies {
                 //Coroutines
@@ -131,4 +127,11 @@ sqldelight {
         packageName = "com.app.kmmtumbler.shared.cache"
         sourceFolders = listOf("sqldelight")
     }
+}
+
+detekt {
+    buildUponDefaultConfig = true // preconfigure defaults
+    allRules = false // activate all available (even unstable) rules.
+    config = files("$projectDir/code_quality/config.yml") // point to your custom config defining rules to run, overwriting default behavior
+    baseline = file("$projectDir/code_quality/baseline.xml") // a way of suppressing issues before introducing detekt
 }

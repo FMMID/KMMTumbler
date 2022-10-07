@@ -42,3 +42,14 @@ dependencies {
     //Yookass
     implementation(libs.yookassa.android)
 }
+
+dependencies{
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.16.0")
+}
+
+detekt {
+    buildUponDefaultConfig = true // preconfigure defaults
+    allRules = false // activate all available (even unstable) rules.
+    config = files("$projectDir/code_quality/config.yml") // point to your custom config defining rules to run, overwriting default behavior
+    baseline = file("$projectDir/code_quality/baseline.xml") // a way of suppressing issues before introducing detekt
+}

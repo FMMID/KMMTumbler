@@ -18,10 +18,7 @@ allprojects {
     // run ./gradlew dependencyUpdates
     // Report: build/dependencyUpdates/report.txt
     apply(plugin = "com.github.ben-manes.versions")
-}
-
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    apply(plugin = "io.gitlab.arturbosch.detekt")
 }
 
 //https://github.com/ben-manes/gradle-versions-plugin#rejectversionsif-and-componentselection
@@ -32,8 +29,30 @@ fun isNonStable(version: String): Boolean {
     return isStable.not()
 }
 
-tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
-    rejectVersionIf {
-        isNonStable(candidate.version) && !isNonStable(currentVersion)
+tasks {
+    register("clean", Delete::class) {
+        delete(rootProject.buildDir)
+    }
+    withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+        rejectVersionIf {
+            isNonStable(candidate.version) && !isNonStable(currentVersion)
+        }
+    }
+    withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        reports {
+            xml {
+                outputLocation.set(file("build/reports/detekt-results.xml"))
+            }
+            html {
+                outputLocation.set(file("build/reports/detekt-results.html"))
+            }
+            txt.required.set(false)
+        }
+    }
+    withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        jvmTarget = "1.8"
+    }
+    withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
+        jvmTarget = "1.8"
     }
 }
