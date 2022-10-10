@@ -4,7 +4,7 @@ import org.intellij.markdown.MarkdownTokenTypes.Companion.URL
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("detekt")
+    id("detekt-configuration")
     id("com.android.library")
     id("com.squareup.sqldelight")
     id("com.codingfeline.buildkonfig")

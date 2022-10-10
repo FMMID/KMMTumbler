@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath(libs.bundles.plugins)
-        classpath(":buildlogic")
+        classpath(":buildLogic")
     }
 }
 

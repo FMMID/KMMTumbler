@@ -10,6 +10,6 @@ rootProject.name = "KMMTumbler"
 include(":androidApp")
 include(":shared")
 
-includeBuild("buildlogic")
+includeBuild("buildLogic")
 
 enableFeaturePreview("VERSION_CATALOGS")
