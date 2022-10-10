@@ -1,7 +1,6 @@
 plugins {
     kotlin("android")
     id("com.android.application")
-    id("detekt-configuration")
 }
 
 android {

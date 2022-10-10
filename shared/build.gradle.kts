@@ -1,5 +1,4 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import org.intellij.markdown.MarkdownTokenTypes.Companion.URL
 
 plugins {
     kotlin("multiplatform")
