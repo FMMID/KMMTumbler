@@ -4,6 +4,7 @@ plugin-android = "7.2.1"
 plugin-kotlin = "1.7.10"
 plugin-gver = "0.42.0"
 plugin-detekt = "1.21.0"
+plugin-mobile-muliplatform = "0.14.1"
 
 #detekt
 detekt-formatting = "1.16.0"
@@ -40,6 +41,7 @@ plugin-gver = { module = "com.github.ben-manes:gradle-versions-plugin", version.
 plugin-sqldelight = { module = "com.squareup.sqldelight:gradle-plugin", version.ref = "sqldelight" }
 plugin-konfig = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
 plugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "plugin-detekt" }
+plugin-mobile-muliplatform = { module = "dev.icerock:mobile-multiplatform", version.ref = "plugin-mobile-muliplatform" }
 
 #android
 android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
