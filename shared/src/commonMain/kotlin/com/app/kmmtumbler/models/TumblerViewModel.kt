@@ -30,7 +30,8 @@ class TumblerViewModel(
     suspend fun getUserData(): List<UserBlog> {
         val data = tumblerRepository.getUserData()
         pagingFollowingControllerWrap = PagingFollowingControllerWrap(
-            uuidBlog = data.last().uuidBlog)
+            uuidBlog = data.last().uuidBlog
+        )
         return data
     }
 }

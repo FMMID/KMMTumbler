@@ -4,6 +4,7 @@ import org.intellij.markdown.MarkdownTokenTypes.Companion.URL
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    id("detekt")
     id("com.android.library")
     id("com.squareup.sqldelight")
     id("com.codingfeline.buildkonfig")
@@ -127,11 +128,4 @@ sqldelight {
         packageName = "com.app.kmmtumbler.shared.cache"
         sourceFolders = listOf("sqldelight")
     }
-}
-
-detekt {
-    buildUponDefaultConfig = true // preconfigure defaults
-    allRules = false // activate all available (even unstable) rules.
-    config = files("$projectDir/code_quality/config.yml") // point to your custom config defining rules to run, overwriting default behavior
-    baseline = file("$projectDir/code_quality/baseline.xml") // a way of suppressing issues before introducing detekt
 }

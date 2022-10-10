@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath(libs.bundles.plugins)
+        classpath(":buildlogic")
     }
 }
 
@@ -37,22 +38,5 @@ tasks {
         rejectVersionIf {
             isNonStable(candidate.version) && !isNonStable(currentVersion)
         }
-    }
-    withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        reports {
-            xml {
-                outputLocation.set(file("build/reports/detekt-results.xml"))
-            }
-            html {
-                outputLocation.set(file("build/reports/detekt-results.html"))
-            }
-            txt.required.set(false)
-        }
-    }
-    withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-        jvmTarget = "1.8"
-    }
-    withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
-        jvmTarget = "1.8"
     }
 }

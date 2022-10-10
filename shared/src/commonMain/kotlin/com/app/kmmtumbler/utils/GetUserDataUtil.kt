@@ -15,7 +15,9 @@ fun <CASH : Cash, NETWORK : Network, RESULT : Result> getUserData(
         cash.getData().isNotEmpty() -> {
             cash.mapToResult() as List<RESULT>
         }
-        else -> listOf()
+        else -> {
+            listOf()
+        }
     }
 }
 
