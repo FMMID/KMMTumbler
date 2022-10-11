@@ -1,3 +1,5 @@
+enableFeaturePreview("VERSION_CATALOGS")
+
 pluginManagement {
     repositories {
         google()
@@ -5,11 +7,8 @@ pluginManagement {
         mavenCentral()
     }
 }
+includeBuild("buildLogic")
 
 rootProject.name = "KMMTumbler"
 include(":androidApp")
 include(":shared")
-
-includeBuild("buildLogic")
-
-enableFeaturePreview("VERSION_CATALOGS")

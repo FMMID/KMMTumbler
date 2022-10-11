@@ -10,6 +10,7 @@ import com.app.kmmtumbler.network.response.ResponseUserFollowing
 import com.app.kmmtumbler.network.response.ResponseUserInfo
 import com.app.kmmtumbler.network.response.ResponseUserPosts
 import com.app.kmmtumbler.network.response.ResponseUserSubscribers
+import com.app.kmmtumbler.network.response.*
 import com.app.kmmtumbler.utils.getDefaultHttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth

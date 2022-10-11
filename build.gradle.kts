@@ -7,7 +7,6 @@ buildscript {
     dependencies {
         classpath(libs.bundles.plugins)
         classpath(":buildLogic")
-        classpath(libs.plugin.mobile.muliplatform)
     }
 }
 
@@ -20,8 +19,6 @@ allprojects {
     // run ./gradlew dependencyUpdates
     // Report: build/dependencyUpdates/report.txt
     apply(plugin = "com.github.ben-manes.versions")
-    // run ./gradlew detekt check moduleName:detekt
-    apply(plugin = "io.gitlab.arturbosch.detekt")
 }
 
 //https://github.com/ben-manes/gradle-versions-plugin#rejectversionsif-and-componentselection

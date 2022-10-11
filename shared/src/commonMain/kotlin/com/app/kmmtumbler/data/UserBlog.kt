@@ -7,4 +7,3 @@ data class UserBlog(
     val images: List<UserImage>,
     val subscribers: List<UserSubscriber>
 )
-

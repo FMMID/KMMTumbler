@@ -1,10 +1,10 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
 plugins {
-    kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("shared-configuration")
     id("com.android.library")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 kotlin {
@@ -20,7 +20,6 @@ kotlin {
     }
 
     sourceSets {
-
         val commonMain by getting {
             dependencies {
                 //Paging
@@ -52,7 +51,6 @@ kotlin {
                 api(libs.koin.core)
             }
         }
-        val commonTest by getting
         val androidMain by getting {
             dependencies {
                 //Coroutines
@@ -68,7 +66,6 @@ kotlin {
                 implementation(libs.androidx.lifecycle.viewmodel.ktx)
             }
         }
-        val androidTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -84,15 +81,6 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
-        }
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(this)
-            iosArm64Test.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
         }
     }
 }
@@ -112,5 +100,11 @@ buildkonfig {
         buildConfigField(STRING, "REDIRECT_URI", "https://www.google.ru/")
         buildConfigField(STRING, "CLIENT_CONSUMER_KEY", "JPXGabRtZkIVfuaI0vBCXiFFoa4X6vsnFWHlpAxrtm1QYpShRB")
         buildConfigField(STRING, "CLIENT_SECRET_KEY", "OM589BCr8mP7Mn9coXFF2yqJlgNTpsLBUdjiOhRPSWFDMT97S4")
+    }
+}
+
+tasks.register("detektAll") {
+    allprojects {
+        this@register.dependsOn(tasks.withType<io.gitlab.arturbosch.detekt.Detekt>())
     }
 }

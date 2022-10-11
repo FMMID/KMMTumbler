@@ -4,5 +4,4 @@ plugins {
     kotlin("multiplatform")
     id("com.codingfeline.buildkonfig")
     id("com.squareup.sqldelight")
-    id("detekt-configuration")
 }

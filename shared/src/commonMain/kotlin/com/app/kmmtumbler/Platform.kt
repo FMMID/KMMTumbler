@@ -1,6 +1,7 @@
 package com.app.kmmtumbler
 
 import com.squareup.sqldelight.db.SqlDriver
+import com.squareup.sqldelight.db.*
 
 expect fun initLogger()
 
